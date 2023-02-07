@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,13 +69,15 @@ public class RetailSystemInsertController {
 		return new ResponseEntity<List<RetailItems>>(allUser,HttpStatus.OK);
 	}
 	
-	@PatchMapping("/revise-item")
-	public ResponseEntity<RetailItems> updateItem(@RequestBody RetailItems item){
-		System.out.println("Enter Into updateItem() ::"+item);
-		RetailItems reviseItem = service.reviseItem(item);
-		System.out.println("Revise Item :: "+ reviseItem);
-		return ResponseEntity.ok(reviseItem);
+	@PutMapping("/revise-item/{Id}")
+	public ResponseEntity<RetailItems> reviseItemById(@RequestBody RetailItems item , @PathVariable("Id") String Id){
+		System.out.println("Enter into reviseItem() :: "+item+" And Id :: "+Id);
+		int id=Integer.parseInt(Id);
+		RetailItems updatedItem= service.reviseItemById(item , id);
+		System.out.println("updated item details :: "+updatedItem);
+		return ResponseEntity.ok(updatedItem);
 	}
+	
 	
 	@GetMapping("/obtain/{name}")
 	public ResponseEntity<?> getItemDetailsByName(@PathVariable ("name") String name){

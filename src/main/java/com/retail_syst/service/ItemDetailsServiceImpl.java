@@ -50,12 +50,51 @@ public class ItemDetailsServiceImpl implements ItemDetailsService{
 	}
 
 	@Override
-	public RetailItems reviseItem(RetailItems item) {
-		RetailItems oldItems = dao.findById(item.getId()).get();
+	public RetailItems reviseItemById(RetailItems item , int id) {
 		
-		System.out.println("Old Item :: "+ oldItems);
+		 Optional<RetailItems> oldItem = dao.findById(id);
+		if(oldItem.get() == null && oldItem.isEmpty()) {
+			return null;
+		} else {
+			RetailItems newItem = oldItem.get();
 
-		return null;
+			//Setting updated name
+			if (item.getName() != null && !item.getName().isEmpty())
+				newItem.setName(item.getName());
+			else
+				newItem.setName(oldItem.get().getName());
+
+			//Setting updated category
+			if (item.getCategory() != null && !item.getCategory().isEmpty())
+				newItem.setCategory(item.getCategory());
+			else
+				newItem.setCategory(oldItem.get().getCategory());
+
+			//Setting updated Qty
+			if (item.getQty() != 0)
+				newItem.setQty(item.getQty());
+			else
+				newItem.setQty(oldItem.get().getQty());
+
+			//Setting unit Rate
+			if (item.getUnitRate() != 0)
+				newItem.setUnitRate(item.getUnitRate());
+			else
+				newItem.setUnitRate(oldItem.get().getUnitRate());
+
+			//Setting updated total price
+			if (item.getUnitRate() != 0 && item.getQty() != 0)
+				newItem.setUnitTotalPrice(item.getUnitRate() * item.getQty());
+			else if (item.getQty() != 0 && item.getUnitRate() == 0)
+				newItem.setUnitTotalPrice(item.getQty() * oldItem.get().getUnitRate());
+			else if (item.getUnitRate() != 0 && item.getQty() == 0)
+				newItem.setUnitTotalPrice(item.getUnitRate() * oldItem.get().getQty());
+			else
+				newItem.setUnitTotalPrice(oldItem.get().getUnitTotalPrice());
+
+			return dao.save(newItem);
+		}
+		
 	}
 
 	public RetailItems getItemDetailsByName(String name) {
@@ -90,5 +129,6 @@ public class ItemDetailsServiceImpl implements ItemDetailsService{
 		List<RetailItems> allItems=dao.getItemByCategory(category);
 		return allItems;
 	}
+
 
 }

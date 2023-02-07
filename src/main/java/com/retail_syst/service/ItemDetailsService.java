@@ -12,8 +12,6 @@ public interface ItemDetailsService {
 
 	List<RetailItems> getAllItems();
 
-	RetailItems reviseItem(RetailItems item);
-
 	RetailItems getItemDetailsByName(String name);
 
 	Long getItemCountByCategory(String category);
@@ -23,5 +21,7 @@ public interface ItemDetailsService {
 	String costliestItemByCategory(String category);
 
 	List<RetailItems> getAllItemsByCategory(String category);
+
+	RetailItems reviseItemById(RetailItems item, int id);
 	
 }
