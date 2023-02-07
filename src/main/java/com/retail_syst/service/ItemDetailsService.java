@@ -10,12 +10,18 @@ public interface ItemDetailsService {
 
 	boolean removeItemById(Integer id);
 
-	List<RetailItems> getAllUser();
+	List<RetailItems> getAllItems();
 
 	RetailItems reviseItem(RetailItems item);
 
 	RetailItems getItemDetailsByName(String name);
 
-	List<RetailItems> getAllItemByCategory(String category);
+	Long getItemCountByCategory(String category);
+
+	String getSumOfPricesByCategory(String category);
+	
+	String costliestItemByCategory(String category);
+
+	List<RetailItems> getAllItemsByCategory(String category);
 	
 }

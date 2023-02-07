@@ -44,9 +44,9 @@ public class ItemDetailsServiceImpl implements ItemDetailsService{
 	}
 
 	@Override
-	public List<RetailItems> getAllUser() {
+	public List<RetailItems> getAllItems() {
 		
-		return dao.getAllUser();
+		return dao.getAllItems();
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class ItemDetailsServiceImpl implements ItemDetailsService{
 		RetailItems oldItems = dao.findById(item.getId()).get();
 		
 		System.out.println("Old Item :: "+ oldItems);
-		
+
 		return null;
 	}
 
@@ -67,9 +67,28 @@ public class ItemDetailsServiceImpl implements ItemDetailsService{
 	}
 
 	@Override
-	public List<RetailItems> getAllItemByCategory(String category) {
-		List<RetailItems> allItemByCategory = dao.getAllItemByCategory(category);
-		return allItemByCategory;
+	public Long getItemCountByCategory(String category) {
+		Long itemCount=dao.countByCategory(category);
+		System.out.println(itemCount);
+		return itemCount;
+	}
+
+	@Override
+	public String getSumOfPricesByCategory(String category) {
+		String sumOfItem=dao.sumOfPricesByCategory(category);
+		return sumOfItem;
+	}
+	
+	public String costliestItemByCategory(String category) {
+		String costlyItem=dao.costlyItemByCategory(category);
+		System.out.println("Costly Item in :: "+category +" is "+costlyItem);
+		return costlyItem;
+	}
+
+	@Override
+	public List<RetailItems> getAllItemsByCategory(String category) {
+		List<RetailItems> allItems=dao.getItemByCategory(category);
+		return allItems;
 	}
 
 }

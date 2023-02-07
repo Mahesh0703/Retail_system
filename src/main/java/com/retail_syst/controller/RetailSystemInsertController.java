@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.retail_syst.dao.ItemDetailsDao;
@@ -62,7 +63,7 @@ public class RetailSystemInsertController {
 	@GetMapping("/all-items")
 	public ResponseEntity<List<RetailItems>> getAllItemByDesc(){
 		System.out.println("Enter into getAllItem() :: ");
-		List<RetailItems> allUser = service.getAllUser();
+		List<RetailItems> allUser = service.getAllItems();
 		System.out.println(allUser);
 		return new ResponseEntity<List<RetailItems>>(allUser,HttpStatus.OK);
 	}
@@ -83,13 +84,34 @@ public class RetailSystemInsertController {
 		return ResponseEntity.ok(itemDetailsByName);
 	}
 	
-	@GetMapping("/obtains/{category}")
-	public ResponseEntity<List<RetailItems>> getAllItemByCategory(@PathVariable("category") String category){
-	
+	@GetMapping("/item-count")
+	public ResponseEntity<?> getItemCountByCategory(@RequestParam String category){
 		category.toLowerCase();
-		List<RetailItems> allItemByCategory = service.getAllItemByCategory(category);
-		System.out.println("All item by category :: "+ allItemByCategory);
-		return ResponseEntity.ok(allItemByCategory);
-		
+		Long itemCount = service.getItemCountByCategory(category);
+		return ResponseEntity.ok(itemCount);
+	}
+	
+	@GetMapping("/item-sums")
+	public ResponseEntity<?> getSumOfPricesByCategory(@RequestParam String category){
+		category.toLowerCase();
+		String sumOfItem= service.getSumOfPricesByCategory(category);
+		System.out.println("sum of category "+category +"is :: "+sumOfItem);
+		return ResponseEntity.ok(sumOfItem);
+	}
+	
+	@GetMapping("/item-costly")
+	public ResponseEntity<?> getCostlyItemByCategory(@RequestParam String category){
+		category.toLowerCase();
+		String costlyItem=service.costliestItemByCategory(category);
+		System.out.println("Costly Item :: "+costlyItem);
+		return ResponseEntity.ok(costlyItem);
+	}
+	
+	@GetMapping("/obtains-all/{category}")
+	public ResponseEntity<List<RetailItems>> getAllItemDetailsByCategory(@PathVariable("category") String category){
+		category.toLowerCase();
+		List<RetailItems> allItems=service.getAllItemsByCategory(category);
+		System.out.println("All item Details :: "+allItems);
+		return ResponseEntity.ok(allItems);
 	}
 }
