@@ -75,6 +75,8 @@ public class RetailSystemSecurityConfig extends WebSecurityConfigurerAdapter{
 			.antMatchers("/genearte-token").permitAll()
 			.antMatchers("/retail-home/users").permitAll()
 			.antMatchers("/retail-home/all-items").permitAll()
+			.antMatchers("/retail-home/obtain/*").permitAll()
+			.antMatchers("/retail-home/obtains/*").permitAll()
 //			.antMatchers("/retail-home/removeitem/*").permitAll()
 			.anyRequest().authenticated()
 			.and()

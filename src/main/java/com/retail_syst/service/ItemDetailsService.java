@@ -13,5 +13,9 @@ public interface ItemDetailsService {
 	List<RetailItems> getAllUser();
 
 	RetailItems reviseItem(RetailItems item);
+
+	RetailItems getItemDetailsByName(String name);
+
+	List<RetailItems> getAllItemByCategory(String category);
 	
 }

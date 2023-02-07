@@ -16,6 +16,10 @@ public interface ItemDetailsDao extends CrudRepository<RetailItems, Integer> {
 	@Query(value="select * from Doc_Retail_Item order by Item_Name Desc",nativeQuery = true)
 	List<RetailItems> getAllUser();
 
+	RetailItems getItemByName(String name);
+
+	List<RetailItems> getAllItemByCategory(String category);
+
 //	@Query(value="update Doc_Retail_Item set item_category=item ")
 //	RetailItems reviseItem(RetailItems item);
 

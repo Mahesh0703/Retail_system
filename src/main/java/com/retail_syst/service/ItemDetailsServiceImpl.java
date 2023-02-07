@@ -58,4 +58,18 @@ public class ItemDetailsServiceImpl implements ItemDetailsService{
 		return null;
 	}
 
+	public RetailItems getItemDetailsByName(String name) {
+
+		RetailItems itemByName = dao.getItemByName(name);
+		System.out.println(itemByName);
+		return itemByName;
+
+	}
+
+	@Override
+	public List<RetailItems> getAllItemByCategory(String category) {
+		List<RetailItems> allItemByCategory = dao.getAllItemByCategory(category);
+		return allItemByCategory;
+	}
+
 }

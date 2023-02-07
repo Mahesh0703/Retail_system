@@ -12,18 +12,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.retail_syst.dao.ItemDetailsDao;
 import com.retail_syst.service.ItemDetailsService;
-import com.retail_syst.service.RetailDetailsService;
 import com.retail_syst.vo.RetailItems;
 
 @RestController
 @RequestMapping("/retail-home")
-public class RetailSystemController {
+public class RetailSystemInsertController {
 
 
 	@Autowired
@@ -76,5 +73,23 @@ public class RetailSystemController {
 		RetailItems reviseItem = service.reviseItem(item);
 		System.out.println("Revise Item :: "+ reviseItem);
 		return ResponseEntity.ok(reviseItem);
+	}
+	
+	@GetMapping("/obtain/{name}")
+	public ResponseEntity<?> getItemDetailsByName(@PathVariable ("name") String name){
+		name.toLowerCase();
+		RetailItems itemDetailsByName = service.getItemDetailsByName(name);
+		System.out.println("Item details by name :: "+ itemDetailsByName);
+		return ResponseEntity.ok(itemDetailsByName);
+	}
+	
+	@GetMapping("/obtains/{category}")
+	public ResponseEntity<List<RetailItems>> getAllItemByCategory(@PathVariable("category") String category){
+	
+		category.toLowerCase();
+		List<RetailItems> allItemByCategory = service.getAllItemByCategory(category);
+		System.out.println("All item by category :: "+ allItemByCategory);
+		return ResponseEntity.ok(allItemByCategory);
+		
 	}
 }
