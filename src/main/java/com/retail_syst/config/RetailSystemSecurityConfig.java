@@ -76,6 +76,7 @@ public class RetailSystemSecurityConfig extends WebSecurityConfigurerAdapter{
 			.antMatchers("/retail-home/users").permitAll()
 			.antMatchers("/retail-home/all-items").permitAll()
 			.antMatchers("/retail-home/obtain/*").permitAll()
+			.antMatchers("/retail-home/export-to-csv").permitAll()
 			.anyRequest().authenticated()
 			.and()
 			.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

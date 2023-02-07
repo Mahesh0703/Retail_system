@@ -1,6 +1,9 @@
 package com.retail_syst.controller;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,8 +17,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.retail_syst.config.CsvFileGenerator;
 import com.retail_syst.dao.ItemDetailsDao;
 import com.retail_syst.service.ItemDetailsService;
 import com.retail_syst.vo.RetailItems;
@@ -31,16 +36,14 @@ public class RetailSystemInsertController {
 	@Autowired
 	ItemDetailsDao dao;
 	
+	@Autowired
+	CsvFileGenerator csvFileGenerator; 
+	
 	@GetMapping("/welcome")
 	public String welcome() {
 		 String s="Its private page";
 		 return s;
 		
-	}
-	
-	@GetMapping("/users")
-	public String getUser() {
-		return "{\"name\":\"alex\"}";
 	}
 	
 	@PostMapping("/insertdetails")
@@ -77,8 +80,7 @@ public class RetailSystemInsertController {
 		System.out.println("updated item details :: "+updatedItem);
 		return ResponseEntity.ok(updatedItem);
 	}
-	
-	
+		
 	@GetMapping("/obtain/{name}")
 	public ResponseEntity<?> getItemDetailsByName(@PathVariable ("name") String name){
 		name.toLowerCase();
@@ -117,4 +119,12 @@ public class RetailSystemInsertController {
 		System.out.println("All item Details :: "+allItems);
 		return ResponseEntity.ok(allItems);
 	}
+	
+	@GetMapping("/export-to-csv")
+	public void exportIntoCsv(HttpServletResponse response ) throws IOException{
+		response.setContentType("text/csv");
+	    response.addHeader("Content-Disposition", "attachment; filename=\"retail.csv\"");
+	    csvFileGenerator.writeRetailDetailsToCsv(service.getAllItems(), response.getWriter());
+	}
+	
 }
