@@ -2,6 +2,8 @@ package com.retail_syst.service;
 
 import java.util.List;
 
+import com.retail_syst.model.PageSetting;
+import com.retail_syst.model.PaginationResponse;
 import com.retail_syst.vo.RetailItems;
 
 public interface ItemDetailsService {
@@ -10,7 +12,7 @@ public interface ItemDetailsService {
 
 	boolean removeItemById(Integer id);
 
-	List<RetailItems> getAllItems();
+	List<RetailItems> getAllItemsByDesc();
 
 	RetailItems getItemDetailsByName(String name);
 
@@ -23,5 +25,12 @@ public interface ItemDetailsService {
 	List<RetailItems> getAllItemsByCategory(String category);
 
 	RetailItems reviseItemById(RetailItems item, int id);
+
+	RetailItems getItemDetailsById(int id);
+
+	List<RetailItems> getAllItems();
+	
+	PaginationResponse getAllItemsPagination(PageSetting page);
+
 	
 }

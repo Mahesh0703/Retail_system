@@ -1,5 +1,8 @@
 package com.retail_syst.controller;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -10,35 +13,45 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.retail_syst.config.CsvFileGenerator;
 import com.retail_syst.dao.ItemDetailsDao;
+import com.retail_syst.model.PageSetting;
+import com.retail_syst.model.PaginationResponse;
 import com.retail_syst.service.ItemDetailsService;
 import com.retail_syst.vo.RetailItems;
 
+
 @RestController
 @RequestMapping("/retail-home")
-public class RetailSystemInsertController {
+public class RetailSystemApi {
 
-
-	@Autowired
-	ItemDetailsService service;
-
-	@Autowired
-	ItemDetailsDao dao;
+	private ItemDetailsService service;	
+	
+	private ItemDetailsDao dao;
+	
+	private CsvFileGenerator csvFileGenerator; 
+	
+	private PageSetting pagesetting;
 	
 	@Autowired
-	CsvFileGenerator csvFileGenerator; 
 	
+	public RetailSystemApi(ItemDetailsService service, ItemDetailsDao dao, CsvFileGenerator csvFileGenerator,
+			PageSetting pagesetting) {
+		super();
+		this.service = service;
+		this.dao = dao;
+		this.csvFileGenerator = csvFileGenerator;
+		this.pagesetting = pagesetting;
+	}
+
 	@GetMapping("/welcome")
 	public String welcome() {
 		 String s="Its private page";
@@ -50,6 +63,15 @@ public class RetailSystemInsertController {
 	public ResponseEntity<?> insertItemDetails(@RequestBody RetailItems items){
 		System.out.println("Items :: "+items);
 		return ResponseEntity.ok(service.inserItemDetails(items));
+	}
+	
+	@PutMapping("/revise-item/{Id}")
+	public ResponseEntity<RetailItems> reviseItemById(@RequestBody RetailItems item , @PathVariable("Id") String Id){
+		System.out.println("Enter into reviseItem() :: "+item+" And Id :: "+Id);
+		int id=Integer.parseInt(Id);
+		RetailItems updatedItem= service.reviseItemById(item , id);
+		System.out.println("updated item details :: "+updatedItem);
+		return ResponseEntity.ok(updatedItem);
 	}
 	
 	@DeleteMapping("/removeitem/{Id}")
@@ -67,18 +89,9 @@ public class RetailSystemInsertController {
 	@GetMapping("/all-items")
 	public ResponseEntity<List<RetailItems>> getAllItemByDesc(){
 		System.out.println("Enter into getAllItem() :: ");
-		List<RetailItems> allUser = service.getAllItems();
+		List<RetailItems> allUser = service.getAllItemsByDesc();
 		System.out.println(allUser);
 		return new ResponseEntity<List<RetailItems>>(allUser,HttpStatus.OK);
-	}
-	
-	@PutMapping("/revise-item/{Id}")
-	public ResponseEntity<RetailItems> reviseItemById(@RequestBody RetailItems item , @PathVariable("Id") String Id){
-		System.out.println("Enter into reviseItem() :: "+item+" And Id :: "+Id);
-		int id=Integer.parseInt(Id);
-		RetailItems updatedItem= service.reviseItemById(item , id);
-		System.out.println("updated item details :: "+updatedItem);
-		return ResponseEntity.ok(updatedItem);
 	}
 		
 	@GetMapping("/obtain/{name}")
@@ -125,6 +138,25 @@ public class RetailSystemInsertController {
 		response.setContentType("text/csv");
 	    response.addHeader("Content-Disposition", "attachment; filename=\"retail.csv\"");
 	    csvFileGenerator.writeRetailDetailsToCsv(service.getAllItems(), response.getWriter());
+	}
+	
+	@GetMapping("/item-hateoas/{Id}")
+	public RetailItems getItemDetailsWithLink(@PathVariable int Id) {
+		RetailItems item = service.getItemDetailsById(Id);
+		item.add(linkTo(methodOn(RetailSystemApi.class).getItemDetailsWithLink(item.getId())).withSelfRel());
+		item.add(linkTo(methodOn(RetailSystemApi.class).getItemDetailsByName(item.getName())).withRel("ItemDetailByName"));
+		item.add(linkTo(methodOn(RetailSystemApi.class).getAllItemByDesc()).withRel("getAllItems"));
+		
+		return item;
+	}
+	
+	@GetMapping("/item-pagi/{page}/{pagesize}")
+	public PaginationResponse getItemPagination(@PathVariable int page,
+										@PathVariable int pagesize ) {
+		pagesetting.setPage(page);
+		pagesetting.setPageSize(pagesize);
+		
+		return service.getAllItemsPagination(pagesetting);
 	}
 	
 }

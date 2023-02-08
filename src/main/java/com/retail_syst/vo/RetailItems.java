@@ -5,11 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
+
+import org.springframework.hateoas.RepresentationModel;
+
 import javax.persistence.Id;
 
 @Entity
 @Table(name = "Doc_Retail_Item")
-public class RetailItems {
+public class RetailItems extends RepresentationModel<RetailItems>{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

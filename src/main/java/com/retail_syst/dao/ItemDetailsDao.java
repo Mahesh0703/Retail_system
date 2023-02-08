@@ -12,7 +12,7 @@ import com.retail_syst.service.RetailDetailsService;
 import com.retail_syst.vo.RetailItems;
 
 @Repository
-public interface ItemDetailsDao extends CrudRepository<RetailItems, Integer> {
+public interface ItemDetailsDao extends JpaRepository<RetailItems, Integer> {
 
 	@Query(value="select * from Doc_Retail_Item order by Item_Name Desc",nativeQuery = true)
 	List<RetailItems> getAllItems();

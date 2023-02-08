@@ -4,9 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.retail_syst.dao.ItemDetailsDao;
+import com.retail_syst.model.PageSetting;
+import com.retail_syst.model.PaginationResponse;
 import com.retail_syst.vo.RetailItems;
 
 @Service
@@ -15,13 +20,21 @@ public class ItemDetailsServiceImpl implements ItemDetailsService{
 	@Autowired
 	ItemDetailsDao dao;
 	
+	@Autowired
+	PaginationResponse response;
+	
 	@Override
 	public Object inserItemDetails(RetailItems items) {
-		
-		items.setUnitTotalPrice(items.getUnitRate() * items.getQty());
+
+		RetailItems newItem = new RetailItems();
+		newItem.setUnitTotalPrice(items.getUnitRate() * items.getQty());
+		newItem.setName(items.getName().toLowerCase());
+		newItem.setCategory(items.getCategory().toLowerCase());
+		newItem.setQty(items.getQty());
+		newItem.setUnitRate(items.getUnitRate());
 
 		System.out.println("new Item after total value set ::" + items);
-		return dao.save(items);
+		return dao.save(newItem);
 	}
 
 	@Override
@@ -36,7 +49,7 @@ public class ItemDetailsServiceImpl implements ItemDetailsService{
 	}
 
 	@Override
-	public List<RetailItems> getAllItems() {
+	public List<RetailItems> getAllItemsByDesc() {
 		
 		return dao.getAllItems();
 	}
@@ -52,15 +65,15 @@ public class ItemDetailsServiceImpl implements ItemDetailsService{
 
 			//Setting updated name
 			if (item.getName() != null && !item.getName().isEmpty())
-				newItem.setName(item.getName());
+				newItem.setName(item.getName().toLowerCase());
 			else
-				newItem.setName(oldItem.get().getName());
+				newItem.setName(oldItem.get().getName().toLowerCase());
 
 			//Setting updated category
 			if (item.getCategory() != null && !item.getCategory().isEmpty())
-				newItem.setCategory(item.getCategory());
+				newItem.setCategory(item.getCategory().toLowerCase());
 			else
-				newItem.setCategory(oldItem.get().getCategory());
+				newItem.setCategory(oldItem.get().getCategory().toLowerCase());
 
 			//Setting updated Qty
 			if (item.getQty() != 0)
@@ -120,6 +133,37 @@ public class ItemDetailsServiceImpl implements ItemDetailsService{
 	public List<RetailItems> getAllItemsByCategory(String category) {
 		List<RetailItems> allItems=dao.getItemByCategory(category);
 		return allItems;
+	}
+
+	@Override
+	public RetailItems getItemDetailsById(int id) {
+		
+		return dao.findById(id).get();
+	}
+
+	@Override
+	public List<RetailItems> getAllItems() {
+		
+		return (List<RetailItems>) dao.findAll();
+	}
+	
+	public PaginationResponse getAllItemsPagination(PageSetting page) {
+
+		Pageable pageDetails = PageRequest.of(page.getPage(), page.getPageSize());
+
+		Page<RetailItems> items = dao.findAll(pageDetails);
+
+		List<RetailItems> listOfItems = items.getContent();
+
+		response.setItem(listOfItems);
+		response.setPageNo(items.getNumber());
+		response.setElementsPerPage(items.getSize());
+		response.setTotalElements(items.getTotalElements());
+		response.setTotalPages(items.getTotalPages());
+		response.setLast(items.isLast());
+
+		return response;
+
 	}
 
 
