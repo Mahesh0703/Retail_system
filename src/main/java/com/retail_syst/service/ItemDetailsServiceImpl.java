@@ -17,19 +17,11 @@ public class ItemDetailsServiceImpl implements ItemDetailsService{
 	
 	@Override
 	public Object inserItemDetails(RetailItems items) {
+		
+		items.setUnitTotalPrice(items.getUnitRate() * items.getQty());
 
-		RetailItems newItem = new RetailItems();
-
-		long unitPrice = items.getUnitRate() * items.getQty();
-
-		newItem.setUnitTotalPrice(unitPrice);
-		newItem.setName(items.getName().toLowerCase());
-		newItem.setQty(items.getQty());
-		newItem.setUnitRate(items.getUnitRate());
-		newItem.setCategory(items.getCategory().toLowerCase());
-
-		System.out.println("new Item after total value set ::" + newItem);
-		return dao.save(newItem);
+		System.out.println("new Item after total value set ::" + items);
+		return dao.save(items);
 	}
 
 	@Override

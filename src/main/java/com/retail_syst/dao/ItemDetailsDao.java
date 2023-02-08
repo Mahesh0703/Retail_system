@@ -25,7 +25,7 @@ public interface ItemDetailsDao extends CrudRepository<RetailItems, Integer> {
 	@Query(value="select Item_Category , sum(Item_Total_Price) from Doc_Retail_Item where Item_Category= :category" , nativeQuery = true)
 	String sumOfPricesByCategory(@Param ("category") String category);
 	
-	@Query(value="select Item_Category, max(Item_Unit_Rate) from Doc_Retail_Item where Item_Category= :category", nativeQuery = true)
+	@Query(value="select Item_id,Item_name,Item_category, Item_Unit_Qty, max(Item_unit_rate) from Doc_Retail_Item where Item_Category= :category" , nativeQuery = true)
 	String costlyItemByCategory(@Param ("category") String category);
 
 	@Query(value="select * from Doc_Retail_Item where Item_Category= :category", nativeQuery = true)
