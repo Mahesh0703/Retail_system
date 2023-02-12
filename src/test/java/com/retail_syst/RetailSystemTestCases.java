@@ -62,4 +62,20 @@ public class RetailSystemTestCases {
 		assertEquals(newItem, service.costliestItemByCategory(category));
 		
 	}
+	
+	@Test
+	public void getAllItems() {
+		
+		ArrayList<RetailItems> itemList=new ArrayList<>();
+		itemList.add(new RetailItems(10,"milk","beverage",20,15,(20*25)));
+		itemList.add(new RetailItems(20,"pizza","food",10,20,(10*20)));
+		itemList.add(new RetailItems(30,"bat","sport",200,5,(200*5)));
+		itemList.add(new RetailItems(40,"doll","toy",250,15,(250*15)));
+		itemList.add(new RetailItems(50,"ballon","toy",300,10,(300*10)));
+		itemList.add(new RetailItems(60,"car","toy",500,5,(500*5)));
+		
+		Mockito.when(dao.getAllItems()).thenReturn(itemList);
+		
+		assertEquals(itemList, service.getAllItems());
+	}
 }
